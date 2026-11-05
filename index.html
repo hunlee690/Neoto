@@ -1,133 +1,281 @@
-<!DOCTYPE html>
-<html lang="en-us">
+<!doctype html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity Web Player | Neoto</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-  </head>
-  <body>
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
-        </div>
-      </div>
-      <div id="unity-warning"> </div>
-      <div id="unity-footer">
-        <div id="unity-logo-title-footer"></div>
-        <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">Neoto</div>
-      </div>
-    </div>
-    <script>
-      var canvas = document.querySelector("#unity-canvas");
-
-      // Shows a temporary message banner/ribbon for a few seconds, or
-      // a permanent error message on top of the canvas if type=='error'.
-      // If type=='warning', a yellow highlight color is used.
-      // Modify or remove this function to customize the visually presented
-      // way that non-critical warnings and error messages are presented to the
-      // user.
-      function unityShowBanner(msg, type) {
-        var warningBanner = document.querySelector("#unity-warning");
-        function updateBannerVisibility() {
-          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
-        }
-        var div = document.createElement('div');
-        div.innerHTML = msg;
-        warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
-        else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-          setTimeout(function() {
-            warningBanner.removeChild(div);
-            updateBannerVisibility();
-          }, 5000);
-        }
-        updateBannerVisibility();
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="theme-color" content="#071214">
+    <meta name="description" content="Play Neoto, a solo-developed community world where followers become searchable characters. Explore, complete tasks, earn items and experience the project directly in your browser.">
+    <meta property="og:title" content="Neoto — Everyone belongs in the world">
+    <meta property="og:description" content="A solo-developed browser world where the community becomes part of the game.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="site-assets/neoto-world.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>Neoto — Play in your browser</title>
+    <link rel="icon" href="TemplateData/favicon.ico">
+    <link rel="preload" href="Build/Neoto.loader.js" as="script">
+    <link rel="stylesheet" href="site-assets/site.css">
+    <script src="site-assets/ads-config.js"></script>
+    <script src="site-assets/site.js" defer></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Neoto",
+        "description": "A solo-developed community browser world where followers become playable characters.",
+        "url": "https://hunlee690.github.io/Neoto/",
+        "gamePlatform": "Web browser",
+        "applicationCategory": "Game",
+        "operatingSystem": "Windows, macOS, Android, iOS",
+        "image": "https://hunlee690.github.io/Neoto/site-assets/neoto-world.png",
+        "sameAs": [
+          "https://www.instagram.com/neo.got.sight/",
+          "https://discord.gg/CzQwAy2s8V"
+        ]
       }
-
-      var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/Neoto.loader.js";
-      var config = {
-        arguments: [],
-        dataUrl: buildUrl + "/Neoto.data.unityweb",
-        frameworkUrl: buildUrl + "/Neoto.framework.js.unityweb",
-        codeUrl: buildUrl + "/Neoto.wasm.unityweb",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "DefaultCompany",
-        productName: "Neoto",
-        productVersion: "0.1.0",
-        showBanner: unityShowBanner,
-        // errorHandler: function(err, url, line) {
-        //    alert("error " + err + " occurred at line " + line);
-        //    // Return 'true' if you handled this error and don't want Unity
-        //    // to process it further, 'false' otherwise.
-        //    return true;
-        // },
-      };
-
-      // By default, Unity keeps WebGL canvas render target size matched with
-      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-      // Set this to false if you want to decouple this synchronization from
-      // happening inside the engine, and you would instead like to size up
-      // the canvas DOM size and WebGL render target sizes yourself.
-      // config.matchWebGLToCanvasSize = false;
-
-      // If you would like all file writes inside Unity Application.persistentDataPath
-      // directory to automatically persist so that the contents are remembered when
-      // the user revisits the site the next time, uncomment the following line:
-      // config.autoSyncPersistentDataPath = true;
-      // This autosyncing is currently not the default behavior to avoid regressing
-      // existing user projects that might rely on the earlier manual
-      // JS_FileSystem_Sync() behavior, but in future Unity version, this will be
-      // expected to change.
-
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
-
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
-        document.querySelector("#unity-container").className = "unity-mobile";
-        canvas.className = "unity-mobile";
-
-        // To lower canvas resolution on mobile devices to gain some
-        // performance, uncomment the following line:
-        // config.devicePixelRatio = 1;
-
-
-      } else {
-        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
-        canvas.style.width = "960px";
-        canvas.style.height = "600px";
-      }
-
-      document.querySelector("#unity-loading-bar").style.display = "block";
-
-      var script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
-          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
-              }).then((unityInstance) => {
-                document.querySelector("#unity-loading-bar").style.display = "none";
-                document.querySelector("#unity-fullscreen-button").onclick = () => {
-                  unityInstance.SetFullscreen(1);
-                };
-
-              }).catch((message) => {
-                alert(message);
-              });
-            };
-
-      document.body.appendChild(script);
-
     </script>
+  </head>
+  <body class="game-page">
+    <a class="skip-link" href="#about">Skip the game and read about Neoto</a>
+
+    <header class="site-header">
+      <a class="brand" href="#play" aria-label="Neoto home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>NEOTO</span>
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="#play">Play</a>
+        <a href="#about">Story</a>
+        <a href="#journey">Journey</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <button id="fullscreen-button" class="header-action" type="button" disabled>
+        Fullscreen
+      </button>
+    </header>
+
+    <main>
+      <section id="play" class="play-section" aria-label="Play Neoto">
+        <div class="game-layout">
+          <div id="game-frame" class="game-frame">
+            <canvas id="unity-canvas" width="1280" height="800" tabindex="0" aria-label="Neoto game"></canvas>
+
+            <div id="unity-loading" class="loading-screen" role="status" aria-live="polite">
+              <div class="loading-orbit" aria-hidden="true"></div>
+              <p class="loading-eyebrow">ENTERING THE WORLD</p>
+              <h1>NEOTO</h1>
+              <div class="progress-track" aria-hidden="true">
+                <div id="unity-progress" class="progress-fill"></div>
+              </div>
+              <p id="loading-status" class="loading-status">Preparing your world…</p>
+            </div>
+
+            <div id="unity-warning" class="unity-warning" aria-live="assertive"></div>
+            <div id="load-error" class="load-error" hidden>
+              <p>The world could not start.</p>
+              <button id="retry-button" type="button">Try again</button>
+            </div>
+          </div>
+
+          <aside id="desktop-ad-region" class="ad-region ad-rail" aria-label="Advertisement" hidden>
+            <span class="ad-label">Advertisement</span>
+            <div id="desktop-ad-slot" class="ad-slot ad-slot-vertical"></div>
+          </aside>
+        </div>
+        <p class="game-note">The game starts loading immediately. For the best mobile experience, rotate your phone and use fullscreen.</p>
+      </section>
+
+      <section id="about" class="content-section intro-section">
+        <div class="section-kicker">THE STORY</div>
+        <div class="intro-grid">
+          <div>
+            <h2>The audience became the world.</h2>
+          </div>
+          <div class="intro-copy">
+            <p>Neoto is an independent browser game created by a solo developer. The project began with an unusual idea: instead of only watching a game being made, members of the community could become residents inside it.</p>
+            <p>Followers request characters through the Neoto Instagram journey. Selected names and looks are recreated as NPCs, placed in one searchable world and made available for players to discover and control.</p>
+            <p>The result is part game and part living development diary. Every new character, task, item, vehicle and world system becomes another visible step in the project.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="scene-section" aria-labelledby="scene-title">
+        <figure class="scene-figure">
+          <img src="site-assets/neoto-world.png" alt="A quiet Neoto landscape with a lakeside house, pink tree, mountains and forest" loading="lazy" decoding="async">
+          <figcaption>
+            <span class="section-kicker">INSIDE NEOTO</span>
+            <h2 id="scene-title">A peaceful world that keeps growing.</h2>
+            <p>Forests, water, paths, homes and open terrain form the stage for a population created with the community. The world streams detail around the player so it can remain explorable on both desktop and mobile browsers.</p>
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="feature-section" aria-label="Neoto features">
+        <article class="feature-card feature-card-primary">
+          <span class="card-number">01</span>
+          <h3>Find anyone</h3>
+          <p>Search the character directory and switch to an available NPC, even when that character is far across the world.</p>
+        </article>
+        <article class="feature-card">
+          <span class="card-number">02</span>
+          <h3>Earn a history</h3>
+          <p>Tasks can award achievements, customized items and character abilities. Repeat a challenge and its completion count grows.</p>
+        </article>
+        <article class="feature-card">
+          <span class="card-number">03</span>
+          <h3>Keep moving</h3>
+          <p>Walk, explore and drive through an expanding terrain while the world streams nearby characters and scenery as needed.</p>
+        </article>
+      </section>
+
+      <div id="content-ad-region" class="ad-region content-ad" aria-label="Advertisement" hidden>
+        <span class="ad-label">Advertisement</span>
+        <div id="content-ad-slot" class="ad-slot ad-slot-horizontal"></div>
+      </div>
+
+      <section id="controls" class="content-section controls-section">
+        <div class="section-kicker">HOW TO PLAY</div>
+        <div class="controls-grid">
+          <div>
+            <h2>Simple controls.<br>Many lives.</h2>
+            <p class="muted">The game automatically shows mobile controls on touch devices.</p>
+          </div>
+          <div class="control-list" aria-label="Keyboard controls">
+            <div><kbd>W A S D</kbd><span>Move</span></div>
+            <div><kbd>Mouse</kbd><span>Look and orbit</span></div>
+            <div><kbd>N</kbd><span>Search characters</span></div>
+            <div><kbd>U</kbd><span>Open profile</span></div>
+            <div><kbd>O</kbd><span>Open settings</span></div>
+            <div><kbd>B</kbd><span>Use an available spawn ability</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="journey" class="content-section journey-section">
+        <div class="section-kicker">THE COMMUNITY JOURNEY</div>
+        <div class="journey-heading">
+          <h2>From a comment to a character.</h2>
+          <p>The public development series shows the world growing in real time. Early episodes invited followers to comment during a limited window for a chance to appear in the game. Later episodes expanded gameplay and introduced more types of characters.</p>
+        </div>
+
+        <ol class="process-list">
+          <li>
+            <span>01</span>
+            <div>
+              <h3>Watch the announcement</h3>
+              <p>Character rounds and their rules are announced on the official Neoto Instagram account. Each round may have its own timing and selection requirements.</p>
+            </div>
+          </li>
+          <li>
+            <span>02</span>
+            <div>
+              <h3>A character is created</h3>
+              <p>Selected community profiles inspire a new character with a name, appearance and place in the world. A request is not an automatic guarantee of selection.</p>
+            </div>
+          </li>
+          <li>
+            <span>03</span>
+            <div>
+              <h3>Find that name in Neoto</h3>
+              <p>Once published, players can use the in-game directory to search the full character list and switch to a character even when it is far away.</p>
+            </div>
+          </li>
+        </ol>
+
+        <div class="development-log" aria-label="Selected development episodes">
+          <article>
+            <span>DAY 1</span>
+            <h3>Followers enter the game</h3>
+            <p>The opening episode introduced the idea of turning community members into characters inside Neoto.</p>
+            <a href="https://www.instagram.com/neo.got.sight/reel/DdvNvCXqCtn/" target="_blank" rel="noopener noreferrer">Watch the episode <span aria-hidden="true">↗</span></a>
+          </article>
+          <article>
+            <span>DAY 6</span>
+            <h3>Gameplay joins the series</h3>
+            <p>The project moved beyond population building and began showing the playable systems growing around its characters.</p>
+            <a href="https://www.instagram.com/neo.got.sight/reel/DebFNvhvTVl/" target="_blank" rel="noopener noreferrer">Watch the episode <span aria-hidden="true">↗</span></a>
+          </article>
+          <article>
+            <span>DAY 9</span>
+            <h3>More character variety</h3>
+            <p>The latest chapter introduced female characters and asked the community which features should be developed next.</p>
+            <a href="https://www.instagram.com/neo.got.sight/reel/DfTmvAjqWOR/" target="_blank" rel="noopener noreferrer">Watch the episode <span aria-hidden="true">↗</span></a>
+          </article>
+        </div>
+      </section>
+
+      <section id="world" class="world-section">
+        <div class="world-copy">
+          <div class="section-kicker">COMMUNITY WORLD</div>
+          <h2>Your name can become part of Neoto.</h2>
+          <p>New characters are created from community requests and added to the same searchable world. Each character keeps its identity while streaming and performance systems decide how much detail is needed on each device.</p>
+          <div class="community-actions">
+            <a class="text-link" href="https://www.instagram.com/neo.got.sight/" rel="noopener noreferrer" target="_blank">Follow on Instagram <span aria-hidden="true">↗</span></a>
+            <a class="text-link" href="https://discord.gg/CzQwAy2s8V" rel="noopener noreferrer" target="_blank">Join the Discord <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+        <div class="world-symbol" aria-hidden="true">
+          <span>N</span>
+        </div>
+      </section>
+
+      <section id="community" class="discord-section" aria-labelledby="discord-title">
+        <div>
+          <div class="discord-label">THE NEOTO DISCORD</div>
+          <h2 id="discord-title">Help shape what enters the world next.</h2>
+          <p>Join the community for development updates, game discussion, feedback and announcements about future character rounds. It is the easiest place to stay close to the project between Instagram episodes.</p>
+        </div>
+        <a class="discord-button" href="https://discord.gg/CzQwAy2s8V" target="_blank" rel="noopener noreferrer">Join the server <span aria-hidden="true">↗</span></a>
+      </section>
+
+      <section id="faq" class="content-section faq-section">
+        <div class="section-kicker">QUESTIONS</div>
+        <div class="faq-layout">
+          <div>
+            <h2>Before you enter.</h2>
+            <p class="muted">Useful answers about characters, devices and saved progress.</p>
+          </div>
+          <div class="faq-list">
+            <details>
+              <summary>How do I find a specific character?</summary>
+              <p>Open the character search with <kbd>N</kbd> on desktop or the search control on mobile. Search by name and select the result. The directory is not limited to characters currently loaded near you.</p>
+            </details>
+            <details>
+              <summary>Can I play on a phone?</summary>
+              <p>Yes. Neoto provides touch controls on mobile. Landscape orientation and fullscreen give the game more usable space and prevent browser controls from covering important buttons.</p>
+            </details>
+            <details>
+              <summary>How can my character be added?</summary>
+              <p>Follow <a href="https://www.instagram.com/neo.got.sight/" target="_blank" rel="noopener noreferrer">@neo.got.sight</a> and watch for a character announcement. Follow the rules written on that specific post; selection is not guaranteed.</p>
+            </details>
+            <details>
+              <summary>Where is progress saved?</summary>
+              <p>Your default player can keep local progress in the current browser. Progress associated with published community characters may be stored online. Clearing browser data can remove local-only progress.</p>
+            </details>
+            <details>
+              <summary>Is Neoto finished?</summary>
+              <p>Neoto is an active independent project. New characters and systems are added as development continues, and the Instagram series is the clearest place to follow those changes.</p>
+            </details>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div>
+        <strong>NEOTO</strong>
+        <p>A solo-developed community browser world.</p>
+      </div>
+      <nav aria-label="Legal and contact">
+        <a href="https://discord.gg/CzQwAy2s8V" target="_blank" rel="noopener noreferrer">Discord</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <p class="copyright">© <span id="copyright-year">2026</span> Neoto</p>
+    </footer>
+
+    <noscript>
+      <div class="noscript-message">Neoto needs JavaScript enabled to run.</div>
+    </noscript>
   </body>
 </html>

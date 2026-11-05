@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hunlee690.github.io/Neoto/sitemap.xml
