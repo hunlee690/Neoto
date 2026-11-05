@@ -1016,6 +1016,26 @@ kbd {
 }
 
 @media (orientation: portrait) and (pointer: coarse) {
+  /* Keep the inline game deliberately shorter than the phone viewport so a
+     visitor can see that Neoto is part of a full website. Fullscreen rules
+     below still expand the game to the complete display. */
+  .play-section {
+    min-height: 0;
+    padding-bottom: 0.75rem;
+  }
+
+  .game-layout,
+  .game-frame {
+    height: max(360px, calc(100svh - 150px));
+  }
+
+  .game-note {
+    display: block;
+    margin: 0.65rem 0.9rem 0;
+    text-align: center;
+    font-size: 0.72rem;
+  }
+
   .loading-screen h1 {
     font-size: clamp(3rem, 19vw, 6rem);
   }
