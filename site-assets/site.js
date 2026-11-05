@@ -10,7 +10,6 @@
   const loadingScreen = document.getElementById("unity-loading");
   const progressBar = document.getElementById("unity-progress");
   const loadingStatus = document.getElementById("loading-status");
-  const fullscreenButton = document.getElementById("fullscreen-button");
   const loadError = document.getElementById("load-error");
   const retryButton = document.getElementById("retry-button");
   const warningBanner = document.getElementById("unity-warning");
@@ -50,15 +49,6 @@
     if (loadError) loadError.hidden = false;
   }
 
-  function enterFullscreen() {
-    if (unityInstance && typeof unityInstance.SetFullscreen === "function") {
-      unityInstance.SetFullscreen(1);
-      return;
-    }
-    const frame = document.getElementById("game-frame");
-    if (frame && frame.requestFullscreen) frame.requestFullscreen();
-  }
-
   async function startUnity() {
     if (loadingStarted || !canvas) return;
     loadingStarted = true;
@@ -93,7 +83,6 @@ config.matchWebGLToCanvasSize = true;
       }
       unityInstance = await window.createUnityInstance(canvas, config, updateProgress);
       if (loadingScreen) loadingScreen.classList.add("is-hidden");
-      if (fullscreenButton) fullscreenButton.disabled = false;
       canvas.focus({ preventScroll: true });
       window.neotoUnityInstance = unityInstance;
       window.dispatchEvent(new CustomEvent("neoto:ready"));
@@ -187,9 +176,7 @@ config.matchWebGLToCanvasSize = true;
     }
   });
 
-  fullscreenButton?.addEventListener("click", enterFullscreen);
   retryButton?.addEventListener("click", () => window.location.reload());
-  document.addEventListener("fullscreenchange", () => canvas?.focus({ preventScroll: true }));
 
   // Start Unity first. Advertising is not requested until the Unity download
   // has completed, so ad servers can never compete with the first game load.
