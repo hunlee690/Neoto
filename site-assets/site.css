@@ -62,7 +62,7 @@ a {
   top: 0;
   height: 62px;
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: 2rem;
   padding: 0 3vw;
@@ -98,10 +98,6 @@ a {
   gap: 1.7rem;
 }
 
-.site-header nav {
-  justify-self: end;
-}
-
 .site-header nav a,
 .site-footer nav a {
   color: var(--muted);
@@ -118,6 +114,26 @@ a {
 .site-footer nav a:hover,
 .site-footer nav a:focus-visible {
   color: var(--mint);
+}
+
+.header-action {
+  justify-self: end;
+  min-height: 36px;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid rgba(111, 255, 231, 0.45);
+  border-radius: 999px;
+  color: var(--mint);
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.header-action:disabled {
+  cursor: wait;
+  opacity: 0.38;
 }
 
 .play-section {
@@ -145,6 +161,25 @@ a {
   border-radius: clamp(0.4rem, 1vw, 0.85rem);
   background: #020708;
   box-shadow: 0 34px 100px rgba(0, 0, 0, 0.48), 0 0 0 1px rgba(255, 255, 255, 0.025) inset;
+}
+
+:fullscreen .game-frame,
+:-webkit-full-screen .game-frame {
+  position: fixed;
+  z-index: 40;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+  border: 0;
+  border-radius: 0;
+}
+
+:fullscreen #unity-canvas,
+:-webkit-full-screen #unity-canvas {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 #unity-canvas {
@@ -848,6 +883,11 @@ kbd {
 
   .site-header nav {
     display: none;
+  }
+
+  .header-action {
+    min-height: 34px;
+    padding: 0.45rem 0.75rem;
   }
 
   .play-section {

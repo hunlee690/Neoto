@@ -10,6 +10,7 @@
   const loadingScreen = document.getElementById("unity-loading");
   const progressBar = document.getElementById("unity-progress");
   const loadingStatus = document.getElementById("loading-status");
+  const fullscreenButton = document.getElementById("fullscreen-button");
   const loadError = document.getElementById("load-error");
   const retryButton = document.getElementById("retry-button");
   const warningBanner = document.getElementById("unity-warning");
@@ -49,6 +50,30 @@
     if (loadError) loadError.hidden = false;
   }
 
+  function enterFullscreen() {
+    const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement;
+    if (fullscreenElement) {
+      const exitFullscreen = document.exitFullscreen || document.webkitExitFullscreen;
+      if (exitFullscreen) exitFullscreen.call(document);
+      return;
+    }
+
+    // Fullscreen the page root so Unity's temporary/mobile HTML input remains
+    // inside the fullscreen element and can open the phone keyboard.
+    const page = document.documentElement;
+    const requestFullscreen = page.requestFullscreen || page.webkitRequestFullscreen;
+    if (!requestFullscreen) return;
+
+    const request = requestFullscreen.call(page);
+    if (request && typeof request.then === "function") {
+      request.then(() => {
+        if (screen.orientation?.lock) {
+          screen.orientation.lock("landscape").catch(() => {});
+        }
+      }).catch(() => {});
+    }
+  }
+
   async function startUnity() {
     if (loadingStarted || !canvas) return;
     loadingStarted = true;
@@ -83,6 +108,7 @@ config.matchWebGLToCanvasSize = true;
       }
       unityInstance = await window.createUnityInstance(canvas, config, updateProgress);
       if (loadingScreen) loadingScreen.classList.add("is-hidden");
+      if (fullscreenButton) fullscreenButton.disabled = false;
       canvas.focus({ preventScroll: true });
       window.neotoUnityInstance = unityInstance;
       window.dispatchEvent(new CustomEvent("neoto:ready"));
@@ -176,6 +202,7 @@ config.matchWebGLToCanvasSize = true;
     }
   });
 
+  fullscreenButton?.addEventListener("click", enterFullscreen);
   retryButton?.addEventListener("click", () => window.location.reload());
 
   // Start Unity first. Advertising is not requested until the Unity download
