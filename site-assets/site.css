@@ -1071,3 +1071,18 @@ kbd {
   height: 100% !important;
   touch-action: none;
 }
+
+/* Fullscreen is for the game only. The page root remains the fullscreen
+   element so Unity's mobile HTML keyboard can still work, but the wrapper
+   navigation and page scrollbar must disappear. */
+:fullscreen .site-header,
+:-webkit-full-screen .site-header {
+  display: none !important;
+}
+
+html:fullscreen,
+html:-webkit-full-screen,
+html:fullscreen body,
+html:-webkit-full-screen body {
+  overflow: hidden !important;
+}
