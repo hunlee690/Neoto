@@ -54,7 +54,14 @@
     const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement;
     if (fullscreenElement) {
       const exitFullscreen = document.exitFullscreen || document.webkitExitFullscreen;
-      if (exitFullscreen) exitFullscreen.call(document);
+      if (exitFullscreen) {
+        try {
+          const exitRequest = exitFullscreen.call(document);
+          if (exitRequest && typeof exitRequest.catch === "function") exitRequest.catch(() => {});
+        } catch (error) {
+          console.warn("Could not exit fullscreen.", error);
+        }
+      }
       return;
     }
 
@@ -64,13 +71,11 @@
     const requestFullscreen = page.requestFullscreen || page.webkitRequestFullscreen;
     if (!requestFullscreen) return;
 
-    const request = requestFullscreen.call(page);
-    if (request && typeof request.then === "function") {
-      request.then(() => {
-        if (screen.orientation?.lock) {
-          screen.orientation.lock("landscape").catch(() => {});
-        }
-      }).catch(() => {});
+    try {
+      const request = requestFullscreen.call(page);
+      if (request && typeof request.catch === "function") request.catch(() => {});
+    } catch (error) {
+      console.warn("Could not enter fullscreen.", error);
     }
   }
 
