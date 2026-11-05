@@ -79,7 +79,12 @@
       autoSyncPersistentDataPath: true
     };
 
-    if (isMobile) config.devicePixelRatio = 1;
+    config.devicePixelRatio = Math.min(
+    window.devicePixelRatio || 1,
+    2
+);
+
+config.matchWebGLToCanvasSize = true;
 
     try {
       await loadScript(`${BUILD_ROOT}/${BUILD_NAME}.loader.js`);
